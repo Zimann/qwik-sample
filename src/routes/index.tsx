@@ -27,6 +27,8 @@ export default component$(() => {
           { messages.map((message, index) => (
             <HelloMessage key={index} message={message} showButton={true} onShowMessage={onShowMessageClicked} />
           ))}
+
+          <div className="hello-message">The Css Class hello-message is also applied here</div>
             <button onClick$={sayHello}>Say Hello!</button>
         </>
     );
