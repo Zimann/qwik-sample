@@ -1,4 +1,4 @@
-import { component$, PropFunction, useStyles$ } from "@builder.io/qwik";
+import { component$, PropFunction, useStylesScoped$ } from "@builder.io/qwik";
 
 import styles from './hello-message.css?inline';
 
@@ -12,16 +12,27 @@ interface HelloMessageProps {
 
 export const HelloMessage = component$((props: HelloMessageProps) => {
 
-  useStyles$(styles);
+  useStylesScoped$(styles);
 
   const { message, courseVersion, onShowMessage, showButton } = props;
+
+  const cssClasses = ['hello-message'];
+
+  if (courseVersion == 1) {
+    cssClasses.push('highlighted');
+    console.log('this runs here');
+  }
+
+  const customStyles = (courseVersion === 2) ? {
+    color: 'red',
+    'text-decoration': 'underline',
+  } : {};
 
   return (
     <div class="container">
       {
         <>
-          <div class='hello-message'>
-            {message} - version: {courseVersion}
+          <div class={cssClasses} style={customStyles}> {message} - version: {courseVersion}
           </div>
 
           {showButton && (
