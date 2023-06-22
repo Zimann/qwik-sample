@@ -1,31 +1,36 @@
-import { $, component$, useStore } from "@builder.io/qwik";
+import { $, component$, Resource, useResource$ } from "@builder.io/qwik";
 import { Course } from "~/models/course";
 
-interface CoursesStore {
-  courses: Course[];
-}
 export default component$(() => {
 
-  const store = useStore<CoursesStore>({
-    courses: [],
-  })
+  const resource = useResource$<Course[]>(() => {
+    return getCourses();
+  });
 
-  const onLoadCourses = $(async() => {
-    store.courses = await getCourses();
-  })
 
   return (
     <>
-      <button onClick$={onLoadCourses}>Load Courses</button>
-
-      {store.courses.map(course => (
-        <h3>{course.description}</h3>
-      ))}
+      <Resource
+        value={resource}
+        onPending={() => (
+          <h1>Loading...</h1>
+        )}
+        onRejected={() => (
+          <h1>Request failed.</h1>
+        )}
+        onResolved={courses => (
+          <>
+            {courses.map(course => (
+              <h3>{course.description}</h3>
+            ))}
+          </>
+        )}
+      />
     </>
   );
 });
 
-export async function getCourses () {
-  const response = await fetch('http://localhost:9000/api/courses');
+export async function getCourses() {
+  const response = await fetch("http://localhost:9000/api/courses");
   return response.json();
 }
